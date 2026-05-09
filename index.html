@@ -38,11 +38,23 @@
   <link rel="stylesheet" href="styles/styles.css" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2356b221'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-weight='800' font-size='16' text-anchor='middle' fill='white'%3ER%3C/text%3E%3C/svg%3E" />
 
+  <!-- Analytics & tracking config — pega aquí tus IDs cuando los tengas.
+       Si quedan vacíos, los scripts no se inyectan (cero costo). -->
+  <script>
+    window.LI_CONFIG = {
+      clarityId: "",                     // Microsoft Clarity → https://clarity.microsoft.com/
+      metaPixelId: "",                   // Meta Pixel → Meta Business Manager
+      ga4Id: "",                         // Google Analytics 4 → ga4.dev/your-id
+      hotmartProductId: "K100999555X"    // Tu producto en Hotmart (no cambiar)
+    };
+  </script>
+
   <script src="scripts/lite-yt.js" defer></script>
   <script src="scripts/currency-switcher.js" defer></script>
   <script src="scripts/calculadora.js" defer></script>
   <script src="scripts/test-3plus1.js" defer></script>
   <script src="scripts/sticky-cta.js" defer></script>
+  <script src="scripts/analytics.js" defer></script>
 
   <script type="application/ld+json">
   {
