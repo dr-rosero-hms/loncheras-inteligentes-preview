@@ -933,15 +933,17 @@ em.brand { font-style: normal; color: var(--brand-dark); font-weight: 800; }
   border-radius: 50%;
 }
 
-/* === BANNER DE BONOS ===================================== */
-.bonos-banner {
+/* === BANNERS DE SECCIÓN ================================== */
+.bonos-banner,
+.recetas-banner {
   max-width: 720px;
   margin: 0 auto var(--sp-5);
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-card);
 }
-.bonos-banner img {
+.bonos-banner img,
+.recetas-banner img {
   width: 100%;
   height: auto;
   display: block;
