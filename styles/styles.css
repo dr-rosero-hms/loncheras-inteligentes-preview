@@ -1498,3 +1498,109 @@ lite-youtube > .lty-playbtn::before {
   white-space: nowrap;
   border: 0;
 }
+
+/* =========================================================
+   MOBILE COMPACT — Reducción de espacios para que la página
+   no se sienta "interminable" en pantallas <640px.
+   ========================================================= */
+@media (max-width: 640px) {
+  /* Padding general de secciones: 4.5rem → 2.5rem */
+  .hero               { padding: var(--sp-5) 0 var(--sp-6); }
+  .transition-section { padding: var(--sp-5) 0; }
+  .dark-section       { padding: var(--sp-6) 0; }
+  .learn-section      { padding: var(--sp-6) 0; }
+  .regla              { padding: var(--sp-6) 0; }
+  .mito-section       { padding: var(--sp-6) 0; }
+  .recetas-cat-section{ padding: var(--sp-6) 0; }
+  .includes-section   { padding: var(--sp-6) 0; }
+  .calc-section       { padding: var(--sp-6) 0; }
+  .test-section       { padding: var(--sp-6) 0; }
+  .bonos-section      { padding: var(--sp-6) 0; }
+  .testimonios        { padding: var(--sp-6) 0; }
+  .doc-section        { padding: var(--sp-6) 0; }
+  .oferta             { padding: var(--sp-6) 0 var(--sp-7); }
+  .faq-section        { padding: var(--sp-6) 0; }
+
+  /* Section heads: menos margen abajo */
+  .section-head { margin-bottom: var(--sp-5); }
+  .regla__hero  { margin-bottom: var(--sp-5); }
+
+  /* Hero: badge y trust con menos margen */
+  .hero__badge { margin-bottom: var(--sp-3); padding: 6px 12px; font-size: 12px; }
+  .hero__sub   { margin-bottom: var(--sp-4); font-size: 1rem; }
+  .hero__trust { margin-top: var(--sp-4); gap: var(--sp-3); }
+  .trust-badges { margin-top: var(--sp-3); }
+
+  /* Mito cards: más compactas */
+  .mito-card { padding: var(--sp-4) var(--sp-4) var(--sp-5); gap: var(--sp-2); }
+  .mito-card__list li { padding: 6px 0 6px 22px; font-size: 13px; }
+  .mito-card__cost { padding: 10px 12px; }
+  .mito-card__cost-bars { font-size: 1.75rem; }
+  .mito-card__effect { font-size: 12px; line-height: 1.45; }
+  .mito-quote { padding: var(--sp-4); }
+  .mito-quote p { font-size: var(--fs-md); }
+
+  /* Module cards: más compactas */
+  .module-card h3 { font-size: 16px; margin: var(--sp-3) 0 6px; }
+  .module-card p  { font-size: 13px; line-height: 1.45; padding-bottom: var(--sp-4); }
+  .modules-grid   { gap: var(--sp-3); }
+
+  /* Cat cards (recetas categoría) más compactas */
+  .cat-card h3 { padding: var(--sp-3) var(--sp-4) var(--sp-2); font-size: var(--fs-md); }
+  .cat-card__list { padding: 0 var(--sp-4) var(--sp-4); font-size: 13px; gap: 6px; }
+  .cat-grid { gap: var(--sp-3); }
+
+  /* Test: container más compacto */
+  .test { padding: var(--sp-5) var(--sp-4); }
+  .test__sub { font-size: var(--fs-sm); margin-bottom: var(--sp-4); }
+  .test__field { margin-bottom: var(--sp-3); gap: 4px; }
+  .test__field label { font-size: 13px; }
+  .test__field select { padding: 12px 14px; font-size: 14px; }
+
+  /* Calc */
+  .calc { padding: var(--sp-4); }
+  .calc__choice { padding: 12px 14px; gap: 10px; }
+  .calc__choice-text { font-size: 14px; }
+  .calc__choice-detail { font-size: 12px; }
+  .calc__result { padding: var(--sp-4) var(--sp-3); }
+  .calc__result-label { font-size: 12px; }
+
+  /* Bonos cards más compactas */
+  .bono-card > h3 { font-size: var(--fs-md); margin: var(--sp-3) 0 var(--sp-2); }
+  .bono-card > p { font-size: 13px; line-height: 1.5; margin-bottom: var(--sp-3); }
+  .bonos-banner { margin-bottom: var(--sp-4); }
+
+  /* Testimonios */
+  .testi { padding: var(--sp-4); gap: var(--sp-2); }
+  .testi blockquote { font-size: 14px; line-height: 1.5; }
+  .testimonios-grid { gap: var(--sp-3); }
+
+  /* FAQ */
+  .faq summary { padding: var(--sp-3) var(--sp-4); font-size: 14px; }
+  .faq__body { padding: 0 var(--sp-4) var(--sp-4); font-size: 13px; }
+  .faq-list { gap: var(--sp-2); }
+
+  /* Oferta */
+  .oferta__card { padding: var(--sp-5) var(--sp-4); }
+  .oferta__includes li { font-size: 13px; }
+
+  /* Pain points */
+  .pain-list { gap: var(--sp-2); }
+  .pain-item { padding: var(--sp-3) var(--sp-4); font-size: 14px; gap: var(--sp-3); }
+  .midcta { padding: var(--sp-4); margin-top: var(--sp-5); }
+  .midcta p { font-size: 1rem; }
+
+  /* Regla 3+1 cards */
+  .regla-card { padding: var(--sp-4); }
+  .regla-card__num { width: 44px; height: 44px; font-size: 1.25rem; margin-bottom: var(--sp-2); }
+  .regla-card h3 { font-size: var(--fs-md); }
+  .regla-card p { font-size: 13px; }
+  .regla-card__ex { font-size: 12px; padding: 8px 10px; }
+
+  /* Includes card */
+  .includes-card { padding: var(--sp-4); }
+  .includes-list li { padding: 8px 0; }
+
+  /* H2 más compactos en mobile */
+  .section-head h2 { font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2rem); }
+}
