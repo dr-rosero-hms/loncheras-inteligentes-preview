@@ -1,9 +1,16 @@
 /**
  * Sticky CTA — Faro de conversión flotante
  * --------------------------------------------------------
- * Aparece tras 18% de scroll. El micro-copy cambia según
- * la sección visible (IntersectionObserver) para que Martha
- * siempre vea el siguiente paso correcto.
+ * Lógica clara y consistente entre móvil y desktop:
+ *   - Mientras el CTA del HERO está visible → sticky oculto (no necesario)
+ *   - Cuando scrolleas más allá del hero → sticky aparece
+ *   - Si vuelves al hero → sticky se oculta
+ *
+ * Bonus: el copy del sticky cambia según la sección visible
+ * (Regla 3+1, Test, Testimonios, Bio Dr., Oferta).
+ *
+ * Anteriormente usaba "ratio > 0.18" que se sentía aleatorio
+ * porque el threshold variaba con la altura total del documento.
  */
 (() => {
   "use strict";
@@ -11,15 +18,28 @@
   const ctaText = document.getElementById("sticky-cta-text");
   if (!cta || !ctaText) return;
 
-  const onScroll = () => {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const ratio = max > 0 ? window.scrollY / max : 0;
-    if (ratio > 0.18) cta.classList.add("is-visible");
-    else cta.classList.remove("is-visible");
-  };
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
+  // ---------- 1. Visibilidad: aparece SOLO al pasar el CTA del Hero ----------
+  // Tres estados posibles:
+  //   - Hero CTA por debajo del viewport (aún no lo viste) → ocultar sticky
+  //   - Hero CTA visible (lo estás viendo)                 → ocultar sticky
+  //   - Hero CTA pasado, arriba del viewport (ya scrolleaste) → mostrar sticky
+  const heroCta = document.querySelector(".hero__cta-row") || document.querySelector(".hero .btn");
 
+  const update = () => {
+    if (!heroCta) {
+      cta.classList.add("is-visible");
+      return;
+    }
+    const r = heroCta.getBoundingClientRect();
+    // r.bottom < 0  ⇒ CTA del hero quedó completamente arriba del viewport
+    cta.classList.toggle("is-visible", r.bottom < 0);
+  };
+
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update, { passive: true });
+  update();
+
+  // ---------- 2. Copy contextual por sección ----------
   const COPY = {
     regla:       "Ver método 3+1",
     test:        "Inscribirme",
@@ -33,7 +53,7 @@
     .filter(Boolean);
 
   if ("IntersectionObserver" in window && sections.length) {
-    const io = new IntersectionObserver(
+    const ctxObserver = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((e) => e.isIntersecting)
@@ -45,6 +65,6 @@
       },
       { threshold: [0.25, 0.5, 0.75] }
     );
-    sections.forEach((s) => io.observe(s));
+    sections.forEach((s) => ctxObserver.observe(s));
   }
 })();
