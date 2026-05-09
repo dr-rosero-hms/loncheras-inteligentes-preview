@@ -474,9 +474,14 @@ em.brand { font-style: normal; color: var(--brand-dark); font-weight: 800; }
 }
 .hero__grid {
   display: grid;
-  gap: var(--sp-6);
+  gap: var(--sp-5);
   grid-template-columns: 1fr;
   align-items: center;
+}
+/* Mobile: el video del Dr. aparece PRIMERO (cara visible en el primer fold) */
+@media (max-width: 919px) {
+  .hero__visual { order: -1; }
+  .hero__visual { aspect-ratio: 16 / 10; max-width: 100%; }
 }
 @media (min-width: 920px) {
   .hero__grid { grid-template-columns: 1.1fr 1fr; gap: var(--sp-7); }
