@@ -110,7 +110,7 @@ export async function onRequestPost({ request, env }) {
             proteina: data.proteina, carbo: data.carbo, vegetal: data.vegetal,
             hidrata: data.hidrata, frecuencia: data.frecuencia, edad: data.edad
           },
-          diagnosis: { titulo: dx.titulo, resumen: dx.resumen, fallos: dx.fallos.map(f => f.titulo) },
+          diagnosis: { titulo: dx.titulo, resumen: dx.resumen, fallos: dx.fallos.map(f => f.titulo), notas: dx.extras.map(f => f.titulo) },
         }),
       });
     } catch (err) {
@@ -156,12 +156,25 @@ function diagnose(data) {
   else if (score === 1) { titulo = "Lonchera con riesgo metabólico"; resumen = "Pico de insulina, hipoglucemia 1 hora después, antojo de azúcar."; urgencia = "alta"; }
   else { titulo = "Esto no es una lonchera"; resumen = "Los ultraprocesados son los enemigos."; urgencia = "alta"; }
 
-  return { score, titulo, resumen, fallos, urgencia };
+  // Notas personalizadas por edad y frecuencia (paridad con el cliente, citas literales del Dr.)
+  const extras = [];
+  if (data.frecuencia === "diario" || data.frecuencia === "3-4") {
+    extras.push({ titulo: "Frecuencia preocupante", msg: "El Dr. Rosero: \"Si los refrigerios salen de tu casa, van a ser 100 veces mejores que lo que vas a comprar.\" El curso te enseña a planearlos en un solo momento de la semana." });
+  }
+  if (data.edad === "0-5") {
+    extras.push({ titulo: "Edad clave", msg: "\"La epigenética y la alimentación los primeros años de vida son cruciales en el neuroendocrinoinmuno desarrollo de los hijos.\" El Bono 2 (5 tips de crecimiento) está hecho para esta edad." });
+  }
+  if (data.edad === "adulto") {
+    extras.push({ titulo: "Para adultos también", msg: "El Dr.: \"Vamos a aprender la regla del 3+1 para sus hijos, pero también para ustedes en la oficina.\"" });
+  }
+
+  return { score, titulo, resumen, fallos, extras, urgencia };
 }
 
 // ---------- HTML del email ----------
 function buildEmailHTML(data, dx) {
   const fallos = dx.fallos.map(f => `<li><strong>${esc(f.titulo)}.</strong> ${esc(f.msg)}</li>`).join("");
+  const extras = (dx.extras || []).map(f => `<li><strong>${esc(f.titulo)}.</strong> ${esc(f.msg)}</li>`).join("");
   const greeting = data.name ? `Hola ${esc(data.name)},` : "Hola,";
 
   return `<!doctype html>
@@ -182,6 +195,8 @@ function buildEmailHTML(data, dx) {
     </div>
 
     ${fallos ? `<h3 style="margin:24px 0 12px;font-size:16px">Lo que necesitas corregir:</h3><ul style="padding-left:20px">${fallos}</ul>` : `<p style="margin:24px 0;font-size:16px"><strong>¡Excelente!</strong> Sigue así. La fórmula 3+1 nunca falla.</p>`}
+
+    ${extras ? `<h3 style="margin:24px 0 12px;font-size:16px">Notas personalizadas:</h3><ul style="padding-left:20px">${extras}</ul>` : ""}
 
     <h3 style="margin:32px 0 12px;font-size:16px">¿Qué sigue?</h3>
     <p>El curso completo "Loncheras Inteligentes" tiene 14 módulos en video, 11 recetas paso a paso, y los 2 bonos exclusivos (lectura de etiquetas + crecimiento infantil).</p>
