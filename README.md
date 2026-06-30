@@ -37,3 +37,5 @@ python3 -m http.server 4321
 ## Notas de copy
 
 Todos los textos del Dr. Rosero entre comillas son citas literales de las 21 transcripciones del curso. Cero alucinaciones. Bonos verificados contra el sitio en producción.
+
+<!-- deploy check 2026-06-30T20:04:52Z -->
