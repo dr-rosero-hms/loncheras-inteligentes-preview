@@ -1,0 +1,1 @@
+import{g as e}from"./index.CH_iu5NA.js";typeof window<"u"&&(window.addEventListener("DOMContentLoaded",()=>{e.from("section",{opacity:0,y:60,duration:1.1,ease:"power2.out"})}),document.addEventListener("carouselSlideChanged",()=>{e.fromTo("#carousel-content h3, #carousel-content p",{opacity:0,y:40},{opacity:1,y:0,duration:.7,stagger:.12,ease:"power2.out"})}));

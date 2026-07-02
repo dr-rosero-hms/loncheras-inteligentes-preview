@@ -1,0 +1,21 @@
+# /api/.htaccess — endpoints PHP (SiteGround: Apache detrás de nginx)
+
+# Sin listado de directorio
+Options -Indexes
+
+# URLs limpias → .php
+RewriteEngine On
+RewriteRule ^hotmart-stats$ hotmart-stats.php [L,QSA]
+RewriteRule ^hotmart-webhook$ hotmart-webhook.php [L,QSA]
+RewriteRule ^test-submit$ test-submit.php [L,QSA]
+
+# La config compartida jamás se sirve por HTTP (incluye backups tipo
+# _config.php.bak / _config.php~ que filtrarían el código fuente)
+<FilesMatch "^_config\.">
+    Require all denied
+</FilesMatch>
+
+# Nunca servir backups/temporales de ningún endpoint (leak de código fuente)
+<FilesMatch "\.(bak|old|orig|save|swp|tmp)$|~$">
+    Require all denied
+</FilesMatch>

@@ -24,7 +24,7 @@ Documento de aprendizajes para replicar en próximas landings de cursos/infoprod
 
 **URLs:**
 - Cloudflare Pages: https://loncheras-inteligentes.pages.dev/
-- Repo: https://github.com/cesarsumosa/loncheras-inteligentes-preview
+- Repo: https://github.com/dr-rosero-hms/loncheras-inteligentes-preview
 
 ---
 

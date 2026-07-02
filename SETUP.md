@@ -74,13 +74,15 @@ Si pones los IDs en `LI_CONFIG`, el sistema dispara eventos automáticos cross-p
 1. En Hotmart → Configuración → API y Webhooks → "Crear credencial"
 2. Permisos: `marketplace.products.read`, `payments.sales.read`
 3. Copia `Client ID` + `Client Secret`
-4. En Cloudflare Pages → tu proyecto → Settings → Environment variables → Production → Add:
+4. Configura esas credenciales en el endpoint PHP de SiteGround (`/api/hotmart-stats`), fuera del webroot público:
    ```
    HOTMART_CLIENT_ID = <pega_aquí>
    HOTMART_CLIENT_SECRET = <pega_aquí>
    HOTMART_PRODUCT_ID = K100999555X
    ```
-5. Re-deploy → el endpoint `/api/hotmart-stats` empezará a devolver datos vivos
+5. El endpoint `/api/hotmart-stats` (PHP en SiteGround) empezará a devolver datos vivos
+
+> Nota: la versión JS original de este endpoint (Cloudflare Pages Functions) quedó en `functions/` solo como referencia histórica. Producción corre en PHP en SiteGround.
 
 ### 5️⃣ Webhook de notificaciones de compra
 
@@ -88,47 +90,48 @@ Si pones los IDs en `LI_CONFIG`, el sistema dispara eventos automáticos cross-p
 
 **Setup Slack/Discord:**
 1. Crea un Incoming Webhook en tu Slack o Discord
-2. En Cloudflare Pages secrets:
+2. Configura los secrets en el endpoint PHP del webhook en SiteGround:
    ```
    SLACK_WEBHOOK_URL = https://hooks.slack.com/...
    DISCORD_WEBHOOK_URL = https://discord.com/api/webhooks/...
    ```
 3. En Hotmart → Webhooks → Add webhook:
-   - URL: `https://loncheras-inteligentes.pages.dev/api/hotmart-webhook`
+   - URL: la del endpoint del webhook en producción (SiteGround)
    - Eventos: `PURCHASE_APPROVED`, `PURCHASE_COMPLETE`
-   - Token: genera uno aleatorio y guárdalo como `HOTMART_WEBHOOK_TOKEN` en Cloudflare
+   - Token: genera uno aleatorio y guárdalo como `HOTMART_WEBHOOK_TOKEN` junto a los demás secrets del endpoint
 
 **Setup Email (Resend):**
 1. Crea cuenta en https://resend.com (3.000 emails/mes gratis)
 2. Verifica tu dominio (academiacomidareal.com)
-3. Genera API key y guárdala como `RESEND_API_KEY` en Cloudflare
+3. Genera API key y guárdala como `RESEND_API_KEY` junto a los demás secrets del endpoint
 4. Define `NOTIFICATION_EMAIL = oscar@academiacomidareal.com` (donde quieres recibir)
 
 ### 6️⃣ Auto-deploy en cada `git push` (CI/CD)
 
-**Por qué:** ahora cada cambio que pusheas a GitHub se despliega solo en Cloudflare Pages. No tienes que ejecutar `wrangler pages deploy` cada vez.
+**Cómo funciona:** cada push a `main` (o un run manual con "Run workflow") dispara `.github/workflows/deploy.yml`, que despliega a **SiteGround (producción)** vía rsync sobre SSH (puerto 18765):
 
-**Setup (5 minutos):**
+- `site/` → `${SITEGROUND_PATH}/cursoloncheras/` (la landing)
+- `api/` → `${SITEGROUND_PATH}/api/` (endpoints PHP, ej. `/api/hotmart-stats`)
+- Al final hace flush de la caché de SiteGround (`site-tools-client domain-all update id=1 flush_cache=1`); si falla, el deploy queda subido igual.
 
-**Opción A — Conectar repo en Cloudflare dashboard (más fácil):**
-1. https://dash.cloudflare.com/ → Pages → loncheras-inteligentes → Settings → Builds & deployments
-2. Connect to Git → autoriza GitHub → selecciona el repo `loncheras-inteligentes-preview`
-3. Production branch: `main` · Build command: (vacío) · Output: `/`
-4. Listo: cada push despliega solo
+Los rsync corren **sin `--delete`** a propósito: el servidor tiene páginas WordPress y otras carpetas que no están en el repo y no deben borrarse.
 
-**Opción B — GitHub Actions (más control):**
-El archivo `.github/workflows/deploy.yml` ya está listo. Solo añade los secrets en GitHub:
-1. https://github.com/cesarsumosa/loncheras-inteligentes-preview/settings/secrets/actions
+**Setup (una sola vez):** añade estos secrets en GitHub:
+1. https://github.com/dr-rosero-hms/loncheras-inteligentes-preview/settings/secrets/actions
 2. New repository secret:
-   - `CLOUDFLARE_API_TOKEN` → genera uno en https://dash.cloudflare.com/profile/api-tokens (template "Edit Cloudflare Workers")
-   - `CLOUDFLARE_ACCOUNT_ID` → `4a8bb1e3427bbe94800bb38cd33e5f3b`
+   - `SITEGROUND_SSH_KEY` → llave privada SSH autorizada en SiteGround (formato OpenSSH)
+   - `SITEGROUND_USER` → usuario SSH de SiteGround
+   - `SITEGROUND_HOST` → host SSH de SiteGround
+   - `SITEGROUND_PATH` → ruta base del webroot (sin slash final)
+
+> Nota: Cloudflare Pages fue solo el preview histórico de esta landing; **no** es producción. Producción vive en SiteGround y se despliega únicamente con este workflow.
 
 ---
 
 ## 🚀 Mi recomendación de orden de setup
 
 1. **Microsoft Clarity** (10 min) — datos de heatmaps reales desde día 1
-2. **Auto-deploy via dashboard** (5 min) — para no depender de mí para cada cambio
+2. **Auto-deploy con GitHub Actions** (5 min) — configura los secrets `SITEGROUND_*` y cada push despliega solo a producción
 3. **Hotmart API** (15 min) — precio sincronizado automáticamente
 4. **Webhook compras** (15 min) — dopamina + pulso del negocio en tiempo real
 5. **Meta Pixel** (cuando vayas a hacer ads) — remarketing
@@ -136,10 +139,9 @@ El archivo `.github/workflows/deploy.yml` ya está listo. Solo añade los secret
 
 ---
 
-## URLs activas
+## URLs
 
-- 🌐 Cloudflare Pages: https://loncheras-inteligentes.pages.dev/
-- 🌐 GitHub Pages (mirror): https://cesarsumosa.github.io/loncheras-inteligentes-preview/
-- 📦 Repo: https://github.com/cesarsumosa/loncheras-inteligentes-preview
-- 🛠 Endpoint Hotmart sync (cuando configures secrets): https://loncheras-inteligentes.pages.dev/api/hotmart-stats
-- 🔔 Webhook Hotmart (URL para pegar en Hotmart): https://loncheras-inteligentes.pages.dev/api/hotmart-webhook
+- 🌐 Producción (SiteGround): la landing vive en `/cursoloncheras/` del webroot del dominio del Dr. Rosero
+- 📦 Repo: https://github.com/dr-rosero-hms/loncheras-inteligentes-preview
+- 🛠 Endpoint Hotmart sync (PHP en SiteGround): `/api/hotmart-stats` en el dominio de producción
+- 🌐 Cloudflare Pages (solo preview histórico, NO producción): https://loncheras-inteligentes.pages.dev/

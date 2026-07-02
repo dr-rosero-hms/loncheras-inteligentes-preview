@@ -1,0 +1,56 @@
+# Deploy a SiteGround via rsync sobre SSH.
+#
+# IMPORTANTE: NUNCA usar --delete en los rsync de este workflow.
+# El webroot de SiteGround contiene páginas WordPress y otras carpetas
+# que NO están en este repo; un rsync --delete las borraría de producción.
+# Por eso solo se suben/actualizan archivos, nunca se eliminan.
+#
+# Secrets requeridos (Settings → Secrets and variables → Actions):
+#   SITEGROUND_SSH_KEY  → llave privada SSH (formato OpenSSH, sin passphrase)
+#   SITEGROUND_USER     → usuario SSH de SiteGround
+#   SITEGROUND_HOST     → host SSH de SiteGround
+#   SITEGROUND_PATH     → ruta base del webroot (sin slash final)
+
+name: Deploy a SiteGround
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar llave SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SITEGROUND_SSH_KEY }}" > ~/.ssh/id_siteground
+          chmod 600 ~/.ssh/id_siteground
+          ssh-keyscan -p 18765 "${{ secrets.SITEGROUND_HOST }}" >> ~/.ssh/known_hosts
+
+      # SIN --delete a propósito (ver comentario al inicio del archivo).
+      - name: Deploy site/ → cursoloncheras/
+        run: |
+          rsync -rlptzv \
+            -e "ssh -p 18765 -i ~/.ssh/id_siteground" \
+            site/ \
+            "${{ secrets.SITEGROUND_USER }}@${{ secrets.SITEGROUND_HOST }}:${{ secrets.SITEGROUND_PATH }}/cursoloncheras/"
+
+      # SIN --delete a propósito (ver comentario al inicio del archivo).
+      - name: Deploy api/ → api/
+        run: |
+          rsync -rlptzv \
+            -e "ssh -p 18765 -i ~/.ssh/id_siteground" \
+            api/ \
+            "${{ secrets.SITEGROUND_USER }}@${{ secrets.SITEGROUND_HOST }}:${{ secrets.SITEGROUND_PATH }}/api/"
+
+      - name: Flush caché SiteGround
+        run: |
+          ssh -p 18765 -i ~/.ssh/id_siteground \
+            "${{ secrets.SITEGROUND_USER }}@${{ secrets.SITEGROUND_HOST }}" \
+            "site-tools-client domain-all update id=1 flush_cache=1" \
+            || echo "AVISO: el flush de caché falló; el deploy se subió igual. Vacía la Caché Dinámica desde Site Tools si hace falta."

@@ -1,6 +1,4 @@
 .DS_Store
-.dropbox
-*.log
-node_modules/
-.cache/
-.wrangler/
+._*
+*.duckversions
+.duckversions
