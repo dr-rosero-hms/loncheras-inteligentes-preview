@@ -64,7 +64,7 @@
       resumen = "Cumples las 4 piezas. \"Loncheras 100% nutritivas.\" Tu hijo va a tener saciedad real, energía estable y cero antojos en la próxima clase.";
     } else if (score === 3) {
       titulo = "Casi. Te falta una pieza";
-      resumen = "Recordá la fórmula completa: 1 proteína + 1 carbohidrato + 1 vegetal o fruta + 1 hidratación. Sin las 4, no es 100% nutritiva.";
+      resumen = "Recuerda la fórmula completa: 1 proteína + 1 carbohidrato + 1 vegetal o fruta + 1 hidratación. Sin las 4, no es 100% nutritiva.";
     } else if (score === 2) {
       titulo = "Lonchera incompleta";
       resumen = "Faltan 2 piezas. \"Necesitamos los tres macronutrientes — ninguno es excluyente.\" Tu hijo va a llegar al recreo con hambre.";
