@@ -33,11 +33,30 @@ if ($method !== 'GET' && $method !== 'HEAD') {
     li_json_response(['error' => 'method_not_allowed'], 0, 405);
 }
 
+// Multi-producto: ?product=<ID> con lista blanca (los 5 productos del sitio).
+// Sin parámetro = Loncheras (compatibilidad con price-sync.js original).
+$LI_PRODUCTS = [
+    'K100999555X' => ['price' => 30, 'name' => 'Loncheras Inteligentes'],
+    'W104617434T' => ['price' => 29, 'name' => 'Curso Aprende a Leer Etiquetas'],
+    'V102474860O' => ['price' => 39, 'name' => 'Curso SOMP'],
+    'G99220429O'  => ['price' => 39, 'name' => 'Adiós Diabetes'],
+    'W102558319B' => ['price' => 15, 'name' => 'Cuidado de la Piel en SOMP'],
+];
+$reqProduct = (string) ($_GET['product'] ?? '');
+if ($reqProduct !== '' && !isset($LI_PRODUCTS[$reqProduct])) {
+    li_json_response(['error' => 'unknown_product'], 0, 404);
+}
+$productId = $reqProduct !== '' ? $reqProduct : (li_cfg('HOTMART_PRODUCT_ID') ?? 'K100999555X');
+$productMeta = $LI_PRODUCTS[$productId] ?? ['price' => 30, 'name' => 'Loncheras Inteligentes'];
+
 // Cache FUERA del webroot y fuera del /tmp compartido (nombre predecible en
 // /tmp = riesgo de envenenamiento/symlink en hosting compartido). Misma
-// carpeta home que el resto de logs; configurable vía li_cfg.
-$cacheFile = li_cfg('LI_STATS_CACHE_PATH')
+// carpeta home que el resto de logs; configurable vía li_cfg. Un cache por producto.
+$cacheBase = li_cfg('LI_STATS_CACHE_PATH')
     ?? (dirname(LI_CONFIG_FILE) . '/li-hotmart-stats-cache.json');
+$cacheFile = $reqProduct !== ''
+    ? preg_replace('/\.json$/', '-' . $productId . '.json', $cacheBase)
+    : $cacheBase;
 
 // ---------------------------------------------------------------------------
 // a) Cache de archivo fresco → devolver directo.
@@ -52,7 +71,6 @@ if ($cached !== null) {
 // ---------------------------------------------------------------------------
 $clientId     = li_cfg('HOTMART_CLIENT_ID');
 $clientSecret = li_cfg('HOTMART_CLIENT_SECRET');
-$productId    = li_cfg('HOTMART_PRODUCT_ID') ?? 'K100999555X';
 
 if ($clientId !== null && $clientSecret !== null) {
     $data = li_stats_fetch_from_hotmart($clientId, $clientSecret, $productId);
@@ -65,7 +83,7 @@ if ($clientId !== null && $clientSecret !== null) {
 // ---------------------------------------------------------------------------
 // c) Proxy al endpoint original en Cloudflare Pages (timeout 5s).
 // ---------------------------------------------------------------------------
-$proxied = li_stats_fetch_from_pages_proxy();
+$proxied = ($productId === 'K100999555X') ? li_stats_fetch_from_pages_proxy() : null;
 if ($proxied !== null) {
     li_stats_cache_write($cacheFile, $proxied);
     li_json_response($proxied, LI_STATS_CACHE_TTL);
@@ -76,10 +94,10 @@ if ($proxied !== null) {
 // ---------------------------------------------------------------------------
 li_json_response([
     'source'       => 'fallback',
-    'price_usd'    => 30,
+    'price_usd'    => $productMeta['price'],
     'currency'     => 'USD',
     'students'     => 1200,
-    'product_name' => 'Loncheras Inteligentes',
+    'product_name' => $productMeta['name'],
 ], 60);
 
 // ===========================================================================
