@@ -41,11 +41,11 @@ if ($method !== 'GET' && $method !== 'HEAD') {
 // actualiza todas las páginas en <=10 min (TTL del cache).
 // api_id = ID numérico del producto en la API (distinto del código de checkout).
 $LI_PRODUCTS = [
-    'K100999555X' => ['price' => 30, 'name' => 'Loncheras Inteligentes',          'api_id' => '5941795', 'floor1200' => true],
-    'W104617434T' => ['price' => 29, 'name' => 'Curso Aprende a Leer Etiquetas',  'api_id' => '7276024', 'floor1200' => false],
-    'V102474860O' => ['price' => 39, 'name' => 'Curso SOMP',                      'api_id' => '6459322', 'floor1200' => false],
-    'G99220429O'  => ['price' => 39, 'name' => 'Adiós Diabetes',                  'api_id' => '5365849', 'floor1200' => false],
-    'W102558319B' => ['price' => 15, 'name' => 'Cuidado de la Piel en SOMP',      'api_id' => '6490379', 'floor1200' => false],
+    'K100999555X' => ['price' => 30, 'name' => 'Loncheras Inteligentes',          'api_id' => '5941795', 'floor1200' => true,  'checkout' => 'https://pay.hotmart.com/K100999555X?checkoutMode=2'],
+    'W104617434T' => ['price' => 29, 'name' => 'Curso Aprende a Leer Etiquetas',  'api_id' => '7276024', 'floor1200' => false, 'checkout' => 'https://pay.hotmart.com/W104617434T?checkoutMode=2'],
+    'V102474860O' => ['price' => 39, 'name' => 'Curso SOMP',                      'api_id' => '6459322', 'floor1200' => false, 'checkout' => 'https://pay.hotmart.com/V102474860O?checkoutMode=2'],
+    'G99220429O'  => ['price' => 39, 'name' => 'Adiós Diabetes',                  'api_id' => '5365849', 'floor1200' => false, 'checkout' => 'https://pay.hotmart.com/G99220429O?off=5maxp42m&checkoutMode=2'],
+    'W102558319B' => ['price' => 15, 'name' => 'Cuidado de la Piel en SOMP',      'api_id' => '6490379', 'floor1200' => false, 'checkout' => 'https://pay.hotmart.com/W102558319B?checkoutMode=2'],
 ];
 $reqProduct = (string) ($_GET['product'] ?? '');
 if ($reqProduct !== '' && !isset($LI_PRODUCTS[$reqProduct])) {
@@ -253,8 +253,9 @@ function li_stats_fetch_from_hotmart(string $clientId, string $clientSecret, arr
         }
     }
 
-    // Precio: catálogo local (fuente de verdad); nombre: el real de la API si llegó.
-    $price    = $meta['price'];
+    // Precio: 1º el checkout público de Hotmart (única fuente que refleja al
+    // instante lo que el Dr. configure), 2º el catálogo local como respaldo.
+    $price    = li_stats_price_from_checkout($meta['checkout']) ?? $meta['price'];
     $currency = 'USD';
     $name = $product['name'] ?? null;
     if (!is_string($name) || $name === '') {
@@ -301,4 +302,27 @@ function li_stats_fetch_from_pages_proxy(): ?array
     }
 
     return $decoded;
+}
+
+
+/**
+ * Lee el precio USD del payload embebido en la página pública del checkout.
+ * El servidor (EE.UU.) recibe la vista en USD. Patrón del payload (Nuxt):
+ *   {"value":N,"currency":M,...},<precio>,"USD"
+ * Devuelve null si no puede extraer un precio sano (5..500 USD).
+ */
+function li_stats_price_from_checkout(string $checkoutUrl): ?float
+{
+    $res = li_http_request('GET', $checkoutUrl, ['User-Agent: Mozilla/5.0'], null, 8);
+    if ($res === null || $res['status'] < 200 || $res['status'] >= 400) {
+        return null;
+    }
+    if (!preg_match('/"value":\d+,"currency":\d+[^}]*\},([0-9]+(?:\.[0-9]+)?),"USD"/', $res['body'], $m)) {
+        return null;
+    }
+    $price = (float) $m[1];
+    if ($price < 5 || $price > 500) {
+        return null; // fuera de rango sano: no confiar en el scrape
+    }
+    return $price === floor($price) ? (float) (int) $price : $price;
 }
