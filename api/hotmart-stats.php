@@ -35,12 +35,17 @@ if ($method !== 'GET' && $method !== 'HEAD') {
 
 // Multi-producto: ?product=<ID> con lista blanca (los 5 productos del sitio).
 // Sin parámetro = Loncheras (compatibilidad con price-sync.js original).
+// PRECIO = este archivo es la fuente de verdad (la API de Hotmart NO expone el
+// precio de la oferta con estos scopes: products/{id} llega vacío, offers da 500
+// y sales/history viene en la moneda del comprador). Cambiar el precio aquí
+// actualiza todas las páginas en <=10 min (TTL del cache).
+// api_id = ID numérico del producto en la API (distinto del código de checkout).
 $LI_PRODUCTS = [
-    'K100999555X' => ['price' => 30, 'name' => 'Loncheras Inteligentes'],
-    'W104617434T' => ['price' => 29, 'name' => 'Curso Aprende a Leer Etiquetas'],
-    'V102474860O' => ['price' => 39, 'name' => 'Curso SOMP'],
-    'G99220429O'  => ['price' => 39, 'name' => 'Adiós Diabetes'],
-    'W102558319B' => ['price' => 15, 'name' => 'Cuidado de la Piel en SOMP'],
+    'K100999555X' => ['price' => 30, 'name' => 'Loncheras Inteligentes',          'api_id' => '5941795', 'floor1200' => true],
+    'W104617434T' => ['price' => 29, 'name' => 'Curso Aprende a Leer Etiquetas',  'api_id' => '7276024', 'floor1200' => false],
+    'V102474860O' => ['price' => 39, 'name' => 'Curso SOMP',                      'api_id' => '6459322', 'floor1200' => false],
+    'G99220429O'  => ['price' => 39, 'name' => 'Adiós Diabetes',                  'api_id' => '5365849', 'floor1200' => false],
+    'W102558319B' => ['price' => 15, 'name' => 'Cuidado de la Piel en SOMP',      'api_id' => '6490379', 'floor1200' => false],
 ];
 $reqProduct = (string) ($_GET['product'] ?? '');
 if ($reqProduct !== '' && !isset($LI_PRODUCTS[$reqProduct])) {
@@ -73,7 +78,7 @@ $clientId     = li_cfg('HOTMART_CLIENT_ID');
 $clientSecret = li_cfg('HOTMART_CLIENT_SECRET');
 
 if ($clientId !== null && $clientSecret !== null) {
-    $data = li_stats_fetch_from_hotmart($clientId, $clientSecret, $productId);
+    $data = li_stats_fetch_from_hotmart($clientId, $clientSecret, $productMeta);
     if ($data !== null) {
         li_stats_cache_write($cacheFile, $data);
         li_json_response($data, LI_STATS_CACHE_TTL);
@@ -172,7 +177,7 @@ function li_stats_cache_write(string $cacheFile, array $data): void
  *
  * @return array<string, mixed>|null
  */
-function li_stats_fetch_from_hotmart(string $clientId, string $clientSecret, string $productId): ?array
+function li_stats_fetch_from_hotmart(string $clientId, string $clientSecret, array $meta): ?array
 {
     // 1. Auth: access_token vía client_credentials.
     $authRes = li_http_request(
@@ -198,29 +203,30 @@ function li_stats_fetch_from_hotmart(string $clientId, string $clientSecret, str
 
     $bearer = ['Authorization: Bearer ' . $token];
 
-    // 2. Detalles del producto (precio + nombre).
+    // 2. Detalles del producto (nombre real + garantía). El precio NO viene
+    // de la API (ver nota en $LI_PRODUCTS): se usa el del catálogo local.
     $product = null;
     $prodRes = li_http_request(
         'GET',
-        'https://developers.hotmart.com/payments/api/v1/sales/products/' . rawurlencode($productId),
+        'https://developers.hotmart.com/products/api/v1/products?id=' . rawurlencode($meta['api_id']),
         $bearer,
         null,
         8
     );
     if ($prodRes !== null && $prodRes['status'] >= 200 && $prodRes['status'] < 300) {
         $decoded = json_decode($prodRes['body'], true);
-        if (is_array($decoded)) {
-            $product = $decoded;
+        if (is_array($decoded) && !empty($decoded['items'][0]) && is_array($decoded['items'][0])) {
+            $product = $decoded['items'][0];
         }
     }
 
     // 3. Ventas de los últimos 12 meses → estudiantes únicos por email.
     $sinceMs  = (time() - 365 * 24 * 60 * 60) * 1000; // epoch en ms, como el JS
-    $students = 1200;
+    $students = $meta['floor1200'] ? 1200 : 0;
     $salesRes = li_http_request(
         'GET',
         'https://developers.hotmart.com/payments/api/v1/sales/history'
-            . '?product_id=' . rawurlencode($productId)
+            . '?product_id=' . rawurlencode($meta['api_id'])
             . '&start_date=' . $sinceMs
             . '&max_results=500',
         $bearer,
@@ -243,29 +249,16 @@ function li_stats_fetch_from_hotmart(string $clientId, string $clientSecret, str
                     $emails[strtolower($email)] = true;
                 }
             }
-            $students = max(count($emails), 1200);
+            $students = $meta['floor1200'] ? max(count($emails), 1200) : count($emails);
         }
     }
 
-    // Mismos defaults "falsy" que el JS: price 0/null → 30, etc.
-    $price = $product['price']['value'] ?? null;
-    if (!is_numeric($price) || (float) $price <= 0) {
-        $price = 30;
-    } else {
-        $price = (float) $price;
-        if ($price === floor($price)) {
-            $price = (int) $price; // 30.0 → 30, como lo serializa JS
-        }
-    }
-
-    $currency = $product['price']['currency_code'] ?? null;
-    if (!is_string($currency) || $currency === '') {
-        $currency = 'USD';
-    }
-
+    // Precio: catálogo local (fuente de verdad); nombre: el real de la API si llegó.
+    $price    = $meta['price'];
+    $currency = 'USD';
     $name = $product['name'] ?? null;
     if (!is_string($name) || $name === '') {
-        $name = 'Loncheras Inteligentes';
+        $name = $meta['name'];
     }
 
     return [
