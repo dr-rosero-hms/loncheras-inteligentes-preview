@@ -42,7 +42,7 @@ if ($method !== 'GET' && $method !== 'HEAD') {
 // api_id = ID numérico del producto en la API (distinto del código de checkout).
 $LI_PRODUCTS = [
     'K100999555X' => ['price' => 30, 'name' => 'Loncheras Inteligentes',          'api_id' => '5941795', 'floor1200' => true,  'checkout' => 'https://pay.hotmart.com/K100999555X?checkoutMode=2'],
-    'W104617434T' => ['price' => 29, 'name' => 'Curso Aprende a Leer Etiquetas',  'api_id' => '7276024', 'floor1200' => false, 'checkout' => 'https://pay.hotmart.com/W104617434T?checkoutMode=2'],
+    'W104617434T' => ['price' => 9, 'name' => 'Curso Aprende a Leer Etiquetas',  'api_id' => '7276024', 'floor1200' => false, 'checkout' => 'https://pay.hotmart.com/W104617434T?checkoutMode=2'],
     'V102474860O' => ['price' => 39, 'name' => 'Curso SOMP',                      'api_id' => '6459322', 'floor1200' => false, 'checkout' => 'https://pay.hotmart.com/V102474860O?checkoutMode=2'],
     'G99220429O'  => ['price' => 39, 'name' => 'Adiós Diabetes',                  'api_id' => '5365849', 'floor1200' => false, 'checkout' => 'https://pay.hotmart.com/G99220429O?off=5maxp42m&checkoutMode=2'],
     'W102558319B' => ['price' => 15, 'name' => 'Cuidado de la Piel en SOMP',      'api_id' => '6490379', 'floor1200' => false, 'checkout' => 'https://pay.hotmart.com/W102558319B?checkoutMode=2'],
