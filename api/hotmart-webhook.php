@@ -18,6 +18,14 @@ declare(strict_types=1);
  *      - DISCORD_WEBHOOK_URL    (opcional — Discord webhook)
  *      - RESEND_API_KEY         (opcional — API key de Resend)
  *      - NOTIFICATION_EMAIL     (opcional — destinatario del email)
+ *      - META_PIXEL_ID          (opcional — CAPI: id del píxel/dataset de Meta)
+ *      - META_CAPI_TOKEN        (opcional — CAPI: token de Conversions API)
+ *      - META_TEST_EVENT_CODE   (opcional — CAPI: código de test de Events Manager)
+ *
+ * CAPI (conversiones server-side): con META_PIXEL_ID + META_CAPI_TOKEN
+ * configurados, cada compra aprobada se reenvía a Meta como evento Purchase
+ * con email/teléfono hasheados (SHA-256) y event_id = transacción de Hotmart
+ * (deduplicable). Sin esas claves el canal simplemente no existe.
  *
  * Todo evento recibido se registra SIEMPRE en un log JSONL (append),
  * aunque no haya ningún canal de notificación configurado, para no
@@ -342,6 +350,60 @@ if ($resendKey !== null && $resendKey !== '' && $notifyEmail !== null && $notify
         ),
     ];
     $channels[] = 'resend';
+}
+
+// --- Meta Conversions API (Purchase server-side, deduplicable) ---
+$pixelId   = li_cfg('META_PIXEL_ID');
+$capiToken = li_cfg('META_CAPI_TOKEN');
+if ($pixelId !== null && $pixelId !== '' && $capiToken !== null && $capiToken !== '') {
+    $userData = [];
+    $emailForHash = is_scalar($buyerEmail) ? strtolower(trim((string) $buyerEmail)) : '';
+    if ($emailForHash !== '' && $emailForHash !== '—' && str_contains($emailForHash, '@')) {
+        $userData['em'] = [hash('sha256', $emailForHash)];
+    }
+    $phoneDigits = is_scalar($buyerPhone) ? (string) preg_replace('/\D+/', '', (string) $buyerPhone) : '';
+    if ($phoneDigits !== '') {
+        $userData['ph'] = [hash('sha256', $phoneDigits)];
+    }
+    $countryIso = is_scalar($buyerCountry) ? strtolower(trim((string) $buyerCountry)) : '';
+    if (strlen($countryIso) === 2) { // Hotmart a veces manda nombre completo: solo hashear ISO-2
+        $userData['country'] = [hash('sha256', $countryIso)];
+    }
+
+    // Sin al menos un identificador de usuario, Meta rechaza el evento: no enviar.
+    if ($userData !== []) {
+        $transaction = $purchase['transaction'] ?? null;
+        $eventId = is_scalar($transaction) && (string) $transaction !== ''
+            ? 'hotmart_' . (string) $transaction
+            : 'hotmart_' . substr(hash('sha256', (string) $rawBody), 0, 24);
+
+        $capiBody = [
+            'data' => [[
+                'event_name'       => 'Purchase',
+                'event_time'       => time(),
+                'event_id'         => $eventId,
+                'action_source'    => 'website',
+                'event_source_url' => 'https://academiacomidareal.com/',
+                'user_data'        => $userData,
+                'custom_data'      => [
+                    'value'        => is_numeric($amountStr) ? (float) $amountStr : 0.0,
+                    'currency'     => $currencyStr,
+                    'content_name' => is_scalar($productName) ? (string) $productName : 'curso',
+                ],
+            ]],
+            'access_token' => $capiToken,
+        ];
+        $testCode = li_cfg('META_TEST_EVENT_CODE');
+        if ($testCode !== null && $testCode !== '') {
+            $capiBody['test_event_code'] = $testCode;
+        }
+        $requests[] = [
+            'url'     => 'https://graph.facebook.com/v21.0/' . rawurlencode($pixelId) . '/events',
+            'headers' => ['Content-Type: application/json'],
+            'body'    => (string) json_encode($capiBody, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        ];
+        $channels[] = 'meta_capi';
+    }
 }
 
 $results = li_send_notifications($requests);
