@@ -1,0 +1,83 @@
+@charset "UTF-8";
+/* =========================================================
+   LONCHERAS INTELIGENTES — Optimización móvil (Fase 2, /test/)
+   Archivo NUEVO. CSS puro, cero JavaScript.
+
+   1. .hms-carousel  → carrusel horizontal con scroll-snap
+      SOLO en móvil (max-width: 767px). En escritorio los
+      grids originales quedan intactos (aquí no se tocan).
+   2. (retirado) la FAQ inline estilo WhatsApp se reemplazó por el
+      widget FAQ-chat flotante (scripts/faqchat.js); la sección FAQ
+      ya no existe en la página.
+   3. Fixes menores de auditoría móvil.
+
+   Selectores con especificidad doblada (.x.x) a propósito:
+   ganan a styles.css sin depender del orden de carga y sin !important.
+   ========================================================= */
+
+/* =========================================================
+   1) CARRUSEL MÓVIL (patrón "Redes a Prueba de Robos" HMS:
+      overflow-x auto + scroll-snap mandatory + tarjeta ~84%
+      del viewport para que la siguiente "asome" e invite al swipe)
+   ========================================================= */
+@media (max-width: 767px) {
+  .hms-carousel.hms-carousel {
+    display: flex;
+    grid-template-columns: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    gap: 12px;
+    /* Full-bleed: .container deja 1rem por lado en móvil; lo recuperamos
+       para que el carrusel use el ancho completo del viewport. */
+    margin-inline: -1rem;
+    max-width: none;
+    /* Tarjeta = 80vw y padding lateral = (100vw - 80vw) / 2 = 10vw →
+       la tarjeta activa (incluidas primera y última) queda centrada y
+       la siguiente "asoma" ~25px invitando al swipe. El padding-block
+       deja respirar sombras (p. ej. el anillo de .module-card.is-feature). */
+    padding: 6px 10vw 14px;
+    scrollbar-width: none;      /* Firefox: sin barra visible */
+    -ms-overflow-style: none;
+  }
+  .hms-carousel.hms-carousel::-webkit-scrollbar {
+    display: none;              /* WebKit: sin barra visible, sigue scrolleable */
+  }
+  .hms-carousel.hms-carousel > * {
+    flex: 0 0 80vw;
+    min-width: 0;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    margin: 0;
+  }
+}
+
+/* =========================================================
+   2) (retirado) FAQ COMO CHAT DE WHATSAPP
+      La FAQ inline se eliminó de la página junto con su sección;
+      el chat de dudas ahora es el widget flotante
+      faqchat.js + faqchat.css (motor HMS marca blanca).
+   ========================================================= */
+
+/* =========================================================
+   3) AUDITORÍA MÓVIL — fixes seguros
+   ========================================================= */
+@media (max-width: 767px) {
+  /* iOS Safari hace zoom al enfocar controles con fuente <16px.
+     styles.css los dejaba en 14px en móvil. */
+  .test__field select { font-size: 16px; }
+
+  /* Cinturón de seguridad contra scroll horizontal accidental:
+     clip (no hidden) para no romper position: sticky/fixed. */
+  html, body { overflow-x: hidden; /* fix: 'clip' en html congela el scroll vertical en Chrome (auditoría móvil 2026-07-04) */ }
+}
+
+/* Referencia USD junto al precio local (formato unificado del sitio) */
+.li-usd-ref { font-size: .55em; font-weight: 400; opacity: .8; white-space: nowrap; }
+@media (max-width: 480px) { .li-usd-ref { display: block; margin-top: 2px; } }
+
+/* Rescate: si la animación reveal no dispara (scroll por ancla/rápido), el contenido se muestra igual */
+.reveal-rescue [class*="reveal"] { opacity: 1 !important; transform: none !important; }
+@media (prefers-reduced-motion: reduce) { [class*="reveal"] { opacity: 1 !important; transform: none !important; transition: none !important; } }

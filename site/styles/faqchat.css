@@ -1,0 +1,47 @@
+/* faqchat.css · Chat FAQ estilo WhatsApp · MOTOR genérico (marca blanca).
+   Acompaña a faqchat.js. Cargar en el <head> de la página. */
+
+/* Animaciones de las burbujas y del "escribiendo..." (sección 5 del kit, no quitar). */
+@keyframes faq-msg-in {
+  from { opacity: 0; transform: translateY(9px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes faq-dot-bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
+  40%           { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Desktop: el kit tal cual — botón bottom 22px / left 22px y panel bottom 90px,
+   ambos vía estilos inline que pone faqchat.js. Aquí no se toca nada. */
+
+/* Móvil (<768px): el botón muta a un círculo de 54px con solo el avatar
+   (el texto "¿Dudas?" desaparece con font-size: 0) y el panel ocupa el ancho.
+   Los !important son necesarios porque el widget usa estilos inline.
+
+   ADAPTACIÓN CRÍTICA de estas páginas: abajo hay una barra sticky de compra
+   a todo lo ancho (~64-84px de alto, z-index 60). El botón flotante queda
+   POR ENCIMA de ella (bottom 88px + safe-area; z-index 255 desde el JS) y el
+   panel arranca por encima del botón (bottom 150px + safe-area; z-index 260). */
+@media (max-width: 767px) {
+  #faq-chat-btn {
+    left: 12px !important;
+    bottom: calc(88px + env(safe-area-inset-bottom)) !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    width: 54px !important;
+    height: 54px !important;
+    justify-content: center !important;
+    font-size: 0 !important;
+  }
+  #faq-chat-panel {
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: none !important;
+    bottom: calc(150px + env(safe-area-inset-bottom)) !important;
+    height: auto !important;
+    /* max-height ajustada: viewport − bottom (150px + safe-area) − 20px de aire arriba. */
+    max-height: calc(100vh - 170px - env(safe-area-inset-bottom)) !important;
+    max-height: calc(100dvh - 170px - env(safe-area-inset-bottom)) !important;
+  }
+}

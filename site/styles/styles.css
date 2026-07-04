@@ -1542,42 +1542,7 @@ em.brand { font-style: normal; color: var(--brand-dark); font-weight: 800; }
   object-fit: contain;
 }
 
-/* === FAQ ================================================= */
-.faq-section { padding: var(--sp-8) 0; background: #fff; }
-.faq-list { max-width: 760px; margin: 0 auto; display: grid; gap: var(--sp-3); }
-.faq {
-  background: var(--paper-soft);
-  border: 1px solid var(--paper-line);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-.faq summary {
-  padding: var(--sp-4) var(--sp-5);
-  font-weight: 700;
-  font-size: var(--fs-md);
-  cursor: pointer;
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--sp-3);
-  color: var(--ink-strong);
-}
-.faq summary::-webkit-details-marker { display: none; }
-.faq summary::after {
-  content: "";
-  width: 20px; height: 20px;
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path d='M5 7l5 6 5-6' fill='none' stroke='%23f76e28' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;
-  transition: transform var(--t-mid) var(--ease);
-  flex-shrink: 0;
-}
-.faq[open] summary::after { transform: rotate(180deg); }
-.faq__body {
-  padding: 0 var(--sp-5) var(--sp-5);
-  color: var(--ink-muted);
-  font-size: var(--fs-sm);
-  line-height: 1.6;
-}
+/* === FAQ (retirada): las dudas viven en el widget FAQ-chat flotante === */
 
 /* === STICKY CTA (verde marca con glow, 1 sola línea) ====== */
 /* El sticky ES un botón .btn .btn--lg flotante: mismo look exacto que el CTA de la
@@ -1711,7 +1676,6 @@ lite-youtube > .lty-playbtn::before {
   .testimonios        { padding: var(--sp-6) 0; }
   .doc-section        { padding: var(--sp-6) 0; }
   .oferta             { padding: var(--sp-6) 0 var(--sp-7); }
-  .faq-section        { padding: var(--sp-6) 0; }
 
   /* Section heads: menos margen abajo */
   .section-head { margin-bottom: var(--sp-5); }
@@ -1766,11 +1730,6 @@ lite-youtube > .lty-playbtn::before {
   .testi { padding: var(--sp-4); gap: var(--sp-2); }
   .testi blockquote { font-size: 14px; line-height: 1.5; }
   .testimonios-grid { gap: var(--sp-3); }
-
-  /* FAQ */
-  .faq summary { padding: var(--sp-3) var(--sp-4); font-size: 14px; }
-  .faq__body { padding: 0 var(--sp-4) var(--sp-4); font-size: 13px; }
-  .faq-list { gap: var(--sp-2); }
 
   /* Oferta */
   .oferta__card { padding: var(--sp-5) var(--sp-4); }
@@ -2201,7 +2160,6 @@ section[id],
    así nada puede quedar invisible si algo del JS falla. */
 
 /* (3) Pulido: enlaces de texto con subrayado suave y mejor área de toque */
-.faq summary { min-height: 44px; }
 .mito-disclaimer a,
 .test-section a[href="test-3-1/"] { text-underline-offset: 2px; }
 .btn:focus-visible,

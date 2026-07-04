@@ -1,8 +1,22 @@
 <!doctype html>
 <html lang="es-CO">
 <head>
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-W2DMGM8W');</script>
+  <!-- Google Tag Manager (carga diferida: primera interacción o 3s) -->
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  (function(){
+    var loaded = false;
+    function loadGTM(){
+      if (loaded) return;
+      loaded = true;
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-W2DMGM8W');
+    }
+    ['scroll','click','touchstart','keydown','mousemove'].forEach(function(ev){
+      window.addEventListener(ev, loadGTM, { passive: true, once: true });
+    });
+    setTimeout(loadGTM, 3000);
+  })();
+  </script>
   <!-- End Google Tag Manager -->
 
   <!-- BUILD DE PRODUCCIÓN: sin panel de Tweaks (sin React/Babel). Hero fijo = foto del Dr. -->
@@ -44,7 +58,9 @@
        Va ANTES de styles.css para que nuestros estilos de botón ganen el cascade. -->
   <link rel="stylesheet" type="text/css" href="https://static.hotmart.com/css/hotmart-fb.min.css" />
   <script src="https://static.hotmart.com/checkout/widget.min.js" defer></script>
-  <link rel="stylesheet" href="styles/styles.css" />
+  <link rel="stylesheet" href="styles/styles.css?v=20260704" />
+  <link rel="stylesheet" href="styles/mobile-opt.css?v=20260704d" />
+  <link rel="stylesheet" href="styles/faqchat.css?v=20260704" />
 
   <!-- ============ TIPOGRAFÍA DE MARCA: Metrópolis ============
        woff2 embebido vía typehaus/metropolis (jsDelivr). Montserrat
@@ -121,11 +137,11 @@
     };
   </script>
 
-  <script src="scripts/price-sync.js" defer></script>
-  <script src="scripts/currency-switcher.js" defer></script>
-  <script src="scripts/test-3plus1.js" defer></script>
-  <script src="scripts/sticky-cta.js" defer></script>
-  <script src="scripts/analytics.js" defer></script>
+  <script src="scripts/price-sync.js?v=20260704" defer></script>
+  <script src="scripts/currency-switcher.js?v=20260704e" defer></script>
+  <script src="scripts/test-3plus1.js?v=20260704" defer></script>
+  <script src="scripts/sticky-cta.js?v=20260704" defer></script>
+  <script src="scripts/analytics.js?v=20260704" defer></script>
 
   <script type="application/ld+json">
   {
@@ -183,59 +199,6 @@
           "availability": "https://schema.org/InStock",
           "url": "https://pay.hotmart.com/K100999555X"
         }
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "No tengo tiempo para cocinar",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Lo digo claro: si tus refrigerios salen de casa son 100 veces mejores. Las recetas duran entre 5 y 15 minutos, usan ingredientes que ya tienes y muchas se preparan con AirFryer u horno. La clase de hábitos sostenibles te enseña a planear los refrigerios de la semana en un solo momento."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Ya hay recetas gratis en YouTube",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Recetas sí. Lo que no encuentras gratis es el sistema: la Regla 3+1, el orden correcto de los alimentos, las combinaciones por edad y qué hacer si tu hijo tiene sobrepeso, hipotiroidismo o resistencia a la insulina. Aquí compras un protocolo médico que valido en mi consulta como endocrinólogo."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Mis hijos son muy mañosos para los vegetales",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Lo respondo siempre: al convertir esas verduras en muffins salados o croquetas, los niños las consumen sin problema. El taller incluye recetas pensadas para niños selectivos: muffins de espinaca y queso, croquetas de atún, mini albóndigas, nuggets caseros."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Comer saludable es caro",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Es el mito más arraigado. Respondo con números: una arepa con queso y un huevo cocido aportan más nutrición a menor costo que una barra de proteína procesada. Además, en el Bono 1 te enseño a leer etiquetas y comprar buenos procesados sin caer en marketing engañoso."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Sirve si no tengo hijos?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Sí. El método aplica igual para adultos en oficina, estudiantes universitarios y cualquier persona que necesite comer fuera de casa con energía estable, sin caer en café+croissant a media mañana."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Cómo accedo al taller después de pagar?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Inmediatamente. El pago se procesa por Hotmart con tarjeta de crédito, PSE, Nequi o débito. Recibes acceso de por vida desde cualquier dispositivo. Si por cualquier razón no te sirve, tienes 7 días de garantía Hotmart con devolución del 100% sin preguntas."
-            }
-          }
-        ]
       }
     ]
   }
@@ -337,7 +300,7 @@
         </div>
         <div class="video-wrap">
           <div class="yt-facade" id="yt-facade" data-id="yyLKWh-pckg" role="button" tabindex="0" aria-label="Reproducir video de presentación del Dr. Óscar Rosero">
-            <img class="yt-facade__poster" src="assets/imgs/hero-bg.webp" alt="Dr. Óscar Rosero presenta el taller Loncheras Inteligentes" width="1280" height="720" />
+            <img class="yt-facade__poster" src="assets/imgs/hero-bg.webp" alt="Dr. Óscar Rosero presenta el taller Loncheras Inteligentes" width="1280" height="720" loading="lazy" />
             <span class="yt-facade__scrim" aria-hidden="true"></span>
             <span class="yt-facade__cta" aria-hidden="true">
               <span class="yt-facade__btn">
@@ -570,7 +533,7 @@ Hacer el test extendido →</a></p>
         </div>
 
         <!-- 14 módulos en grid responsive (sin carrusel) — thumbnails reales -->
-        <div class="modules-grid">
+        <div class="modules-grid hms-carousel">
           <article class="module-card">
             <div class="module-card__thumb"><img src="assets/imgs/mod-01-bienvenida.webp" alt="Bienvenida" loading="lazy" width="640" height="360"/></div>
             <span class="module-card__num">01</span>
@@ -668,7 +631,7 @@ Hacer el test extendido →</a></p>
           <p>Todas grabadas paso a paso. Hechas en AirFryer u horno, con ingredientes que ya tienes en casa.</p>
         </div>
 
-        <div class="cat-grid">
+        <div class="cat-grid hms-carousel">
           <article class="cat-card">
             <div class="cat-card__thumb"><img src="assets/imgs/cat-proteinas.webp" alt="Recetas de proteínas" loading="lazy" width="640" height="360" /></div>
             <h3>Proteínas <span class="cat-card__count">7 recetas</span></h3>
@@ -731,7 +694,7 @@ Hacer el test extendido →</a></p>
           <div class="divider-dot"></div>
           <p>Dos clases extra que te resuelven las dos preguntas que más me hacen en consulta: cómo comprar bien y cómo alimentar a un niño en pleno crecimiento.</p>
         </div>
-        <div class="bonos-grid bonos-grid--two">
+        <div class="bonos-grid bonos-grid--two hms-carousel">
           <article class="bono-card">
             <div class="bono-card__thumb"><img src="assets/imgs/bonus-1-etiquetas.webp" alt="Bonus: Aprende a leer etiquetas" loading="lazy" width="640" height="360" /></div>
             <span class="bono-card__tag">Bono #1</span>
@@ -781,7 +744,7 @@ Hacer el test extendido →</a></p>
           <p>Comentarios reales en Instagram. Sin filtros, sin actores.</p>
         </div>
 
-        <div class="testimonios-grid">
+        <div class="testimonios-grid hms-carousel">
           <article class="testi">
             <div class="testi__head">
               <div class="testi__avatar" aria-hidden="true">T</div>
@@ -909,60 +872,6 @@ Hacer el test extendido →</a></p>
       </div>
     </section>
 
-    <!-- ============== FAQ ============== -->
-    <section class="faq-section" aria-labelledby="faq-title">
-      <div class="container">
-        <div class="section-head">
-          <h2 id="faq-title">Preguntas frecuentes</h2>
-          <div class="divider-dot"></div>
-        </div>
-        <div class="faq-list">
-          <details class="faq">
-            <summary>No tengo tiempo para cocinar</summary>
-            <div class="faq__body">
-              <p>Lo digo claro: <em>"Si mis refrigerios salen de mi casa, van a ser 100 veces mejores que lo que voy a comprar."</em> Las recetas del taller duran entre 5 y 15 minutos, usan ingredientes que ya tienes en la nevera y muchas se preparan con AirFryer u horno (chorizos, nuggets, croquetas, hamburguesas).</p>
-              <p>Además, en la clase de hábitos sostenibles te enseño a planear los refrigerios de la semana en un solo momento, no a las 6 AM corriendo.</p>
-            </div>
-          </details>
-          <details class="faq">
-            <summary>Ya hay recetas gratis en YouTube</summary>
-            <div class="faq__body">
-              <p>Recetas sí. Lo que no encuentras gratis es <strong>el sistema</strong>: la Regla 3+1, el orden correcto de los alimentos para no disparar tu insulina, las combinaciones por edad, qué hacer si tu hijo tiene sobrepeso, hipotiroidismo o resistencia a la insulina.</p>
-              <p>Aquí no compras "más recetas": compras un protocolo médico que valido en mi consulta como endocrinólogo. Eso es lo que te ahorra los próximos 5 años de improvisación.</p>
-            </div>
-          </details>
-          <details class="faq">
-            <summary>Mis hijos son muy mañosos para los vegetales</summary>
-            <div class="faq__body">
-              <p>Respondo a esta objeción en mis clases: <em>"al convertir esas verduras en muffins salados o croquetas, los niños las consumen sin problema."</em></p>
-              <p>El taller incluye recetas pensadas para niños selectivos: muffins de espinaca y queso, croquetas de atún, mini albóndigas con uva pasa adentro, nuggets de pollo caseros. Las verduras dejan de ser "el problema" y empiezan a ser parte del sabor.</p>
-            </div>
-          </details>
-          <details class="faq">
-            <summary>Comer saludable es caro</summary>
-            <div class="faq__body">
-              <p>Es el mito más arraigado. Respondo con números: <em>"Una arepa con queso y un huevo cocido aportan más nutrición a menor costo que una barra de proteína procesada."</em></p>
-              <p>Y una alumna real (@angela_vivianag) lo dice así: <em>"Súper saludable, real y aparte mucho más económico que un paquete de papas y una pony malta — son las onces más comunes en los colegios."</em></p>
-              <p>Además, en el Bono #1 te enseño a leer etiquetas y a comprar buenos procesados sin caer en el marketing engañoso "fitness".</p>
-            </div>
-          </details>
-          <details class="faq">
-            <summary>¿Sirve si no tengo hijos?</summary>
-            <div class="faq__body">
-              <p>Sí. Lo abro así en la clase de la Regla 3+1: <em>"Vamos a aprender la regla del 3+1 para sus hijos, pero también para ustedes en la oficina."</em></p>
-              <p>El método aplica igual para adultos en oficina, estudiantes universitarios y cualquier persona que necesite comer fuera de casa con energía estable, sin caer en café+croissant a media mañana.</p>
-            </div>
-          </details>
-          <details class="faq">
-            <summary>¿Cómo accedo al taller después de pagar?</summary>
-            <div class="faq__body">
-              <p>Inmediatamente. El pago se procesa por Hotmart (con tarjeta de crédito, PSE, Nequi o débito). Recibes acceso de por vida a la plataforma desde cualquier dispositivo. Si por cualquier razón el taller no te sirve, tienes 7 días de garantía Hotmart con devolución del 100% sin preguntas.</p>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
-
     <!-- ============== OFERTA ============== -->
     <section class="oferta" id="empezar" aria-labelledby="oferta-title">
       <div class="container">
@@ -1011,7 +920,7 @@ Hacer el test extendido →</a></p>
   <footer class="site-footer">
     <div class="container">
       <div class="site-footer__brand">
-        <img class="site-footer__logo" src="assets/imgs/logo-doc.webp" alt="" width="48" height="48" />
+        <img class="site-footer__logo" src="assets/imgs/logo-doc.webp" alt="" width="48" height="48" loading="lazy" />
         <p class="site-footer__name">Dr. Óscar Rosero</p>
       </div>
       <p>Endocrinólogo · Experto en Nutrición Metabólica y Hormonas</p>
@@ -1115,5 +1024,252 @@ Hacer el test extendido →</a></p>
     })();
   </script>
 
+  <!-- ============== FAQ-CHAT (widget flotante estilo WhatsApp) ==============
+       Las preguntas frecuentes viven SOLO aquí (decisión del cliente).
+       Config ANTES del motor; faqchat.js con defer garantiza el orden. -->
+  <script>
+    window.FAQCHAT = {
+      chat: {
+        status: 'en línea',
+        doodle: '',
+        intro: 'Hola, soy el Dr. Óscar Rosero. Toca una pregunta y te respondo al instante.',
+        boton: '¿Dudas?'
+      },
+      categorias: [
+        {
+          "label": "El taller",
+          "items": [
+            {
+              "q": "¿Qué es exactamente este taller?",
+              "a": "Es mi taller de loncheras reales para adultos y para niños: recetas 100% comida real en video y en un ebook en PDF, con ingredientes que consigues en cualquier supermercado. Además vienen clases con tips para comer mejor y construir hábitos."
+            },
+            {
+              "q": "¿Es presencial o virtual?",
+              "a": "Es 100% virtual: 14 módulos en video corto y práctico que ves a tu ritmo, desde cualquier dispositivo. Nadie te pone horario."
+            },
+            {
+              "q": "¿Cuántas recetas trae?",
+              "a": "11 recetas grabadas paso a paso más un video completo de bebidas: 7 proteínas, 3 carbohidratos y las combinaciones para armar la lonchera. Todas 100% comida real."
+            },
+            {
+              "q": "¿Cuándo empieza?",
+              "a": "Apenas pagas: el acceso es inmediato por Hotmart. No hay fechas ni grupos, empiezas hoy mismo."
+            },
+            {
+              "q": "¿Hasta cuándo tengo acceso?",
+              "a": "De por vida. Lo ves las veces que quieras y vuelves a las recetas cuando las necesites."
+            },
+            {
+              "q": "¿Sirve para adultos o solo para niños?",
+              "a": "Para los dos: la regla del 3+1 es para tus hijos en el colegio y también para ti en la oficina. Yo mismo lo digo en clase: es para ustedes también."
+            },
+            {
+              "q": "¿Viene recetario para descargar?",
+              "a": "Sí: además de los videos, las recetas vienen en un ebook en PDF que puedes guardar e imprimir."
+            },
+            {
+              "q": "¿Qué traen los bonos?",
+              "a": "Dos clases extra sin costo adicional: cómo leer etiquetas en 10 segundos para comprar bien en el supermercado, y qué necesita tu hijo según su edad para crecer bien. Son las dos preguntas que más me hacen en consulta."
+            },
+            {
+              "q": "¿Necesito air fryer sí o sí?",
+              "a": "Uso mucho el air fryer porque facilita la vida, pero también te muestro horno y sartén. Nada de equipos raros ni costosos."
+            },
+            {
+              "q": "¿Las recetas son complicadas?",
+              "a": "Para nada: son ingredientes de cualquier supermercado y en la cocina todo se hace con la mano. Preparas por lotes, congelas hasta 3 meses y en la mañana solo armas la lonchera."
+            }
+          ]
+        },
+        {
+          "label": "¿Otra dieta más?",
+          "items": [
+            {
+              "q": "¿Esto es otra dieta más?",
+              "a": "No: aquí no cuentas calorías ni eliminas grupos, porque necesitamos los tres macronutrientes y ninguno es excluyente. Es aprender a comer 100% comida real, deliciosa y hecha en casa."
+            },
+            {
+              "q": "¿Reemplaza la consulta con mi médico?",
+              "a": "No, y ojo con esto: el taller es educación en alimentación, no reemplaza tu consulta ni tus medicamentos. Si tienes un diagnóstico, sigue con tu médico tratante y usa esto para comer mejor cada día."
+            },
+            {
+              "q": "¿Sirve si tengo resistencia a la insulina o hipotiroidismo?",
+              "a": "Esto es justo lo que enseño en mi consulta a pacientes con resistencia a la insulina, hipotiroidismo y sobrepeso. Incluso te doy el orden correcto para comer: primero proteína y vegetales, después el carbohidrato y la fruta de último."
+            },
+            {
+              "q": "¿Es seguro para niños pequeños?",
+              "a": "Sí, todo es comida real pensada para loncheras escolares, y te doy pautas por edad: por ejemplo, stevia desde los 2 años y té frío sin azúcar desde los 7. Nada de restricciones raras para un niño en crecimiento."
+            },
+            {
+              "q": "¿Y si mis hijos son mañosos con la verdura?",
+              "a": "Para eso están los muffins de vegetales con queso, las croquetas de atún y las mini albóndigas con uva pasa de sorpresa adentro: la verdura entra sin pelea. Recuerden: si la lonchera va para los niños, tiene que gustarles mucho."
+            },
+            {
+              "q": "¿Puedo dejar mi día trampa del fin de semana?",
+              "a": "Ojo con esto: la inflamación de un solo día trampa puede durar hasta 48 horas y perpetúa los picos de insulina. Los premios se dan en comida real deliciosa, preparada en casa."
+            },
+            {
+              "q": "¿Tengo que eliminar los carbohidratos?",
+              "a": "No: los niños necesitan sí o sí carbohidratos para esas explosiones de actividad física en el colegio. El punto es que sean reales —arepa, yuca, papa— y no harina refinada con azúcar."
+            },
+            {
+              "q": "¿Necesito productos 'fitness' caros?",
+              "a": "No: una arepa con queso y un huevo cocido aportan más nutrición a menor costo que una barra de proteína procesada. Todo se consigue en cualquier supermercado."
+            },
+            {
+              "q": "¿Los jugos naturales sí se pueden?",
+              "a": "No: fruta entera sí, fruta licuada no, y la Academia Americana de Pediatría no recomienda jugos en niños. La base es agua, agua con limón o té sin azúcar."
+            },
+            {
+              "q": "¿Qué es eso de los ultraprocesados?",
+              "a": "Son los enemigos: productos empacados con azúcar, harina de trigo refinada, grasas vegetales industriales y colorantes. En el taller aprendes a identificarlos y a reemplazarlos con comida real."
+            }
+          ]
+        },
+        {
+          "label": "Pago y acceso",
+          "items": [
+            {
+              "q": "¿Cuánto cuesta?",
+              "a": "$30 USD en un solo pago. Sin mensualidades y sin suscripciones."
+            },
+            {
+              "q": "¿Puedo pagar en mi moneda local?",
+              "a": "Sí: Hotmart te muestra el precio en tu moneda con su tasa de cambio y el cobro final se procesa en el checkout. La base es $30 USD."
+            },
+            {
+              "q": "¿Cómo puedo pagar?",
+              "a": "Con tarjeta de crédito o débito, PSE o Nequi, todo a través de Hotmart. Eliges el medio en el checkout."
+            },
+            {
+              "q": "¿Es un pago mensual?",
+              "a": "No: pagas una sola vez y el acceso es de por vida. Recuerda: sin suscripción."
+            },
+            {
+              "q": "¿Es seguro pagar por acá?",
+              "a": "Sí: el pago lo procesa Hotmart, la plataforma de cursos digitales más usada en Latinoamérica para este tipo de talleres. Tus datos van directo a su checkout seguro."
+            },
+            {
+              "q": "¿Y si me arrepiento después de comprar?",
+              "a": "Tienes 7 días de garantía con Hotmart: te devuelven el 100% sin preguntas. Compras tranquilo y decides adentro."
+            },
+            {
+              "q": "¿Cómo pido el reembolso si no me sirve?",
+              "a": "Lo gestionas directamente con Hotmart dentro de los primeros 7 días y ellos te devuelven el 100% de tu dinero. Sin trámites conmigo ni justificaciones."
+            },
+            {
+              "q": "¿Cuándo me llega el acceso?",
+              "a": "Inmediatamente después del pago: Hotmart te habilita la plataforma y entras a la primera clase hoy mismo."
+            },
+            {
+              "q": "¿Puedo verlo en el celular?",
+              "a": "Sí, desde cualquier dispositivo: celular, tablet o computador. Las recetas las puedes seguir con el teléfono ahí en la cocina."
+            },
+            {
+              "q": "¿Después me van a cobrar algo más?",
+              "a": "No: los 14 módulos, las recetas y los 2 bonos van incluidos en el mismo pago único. No hay costos ocultos."
+            }
+          ]
+        },
+        {
+          "label": "El resultado",
+          "items": [
+            {
+              "q": "¿Para quién es este taller?",
+              "a": "Para padres y madres que quieren alimentar bien a sus hijos sin volverse locos cada mañana, y para cualquier persona que coma fuera de casa: oficina, universidad, colegio. Si empacas lonchera o snack, es para ti."
+            },
+            {
+              "q": "¿Qué voy a lograr de verdad?",
+              "a": "Abrir la nevera y saber exactamente qué preparar, porque planeas los refrigerios desde casa en vez de improvisar a las 6 AM. Si tus refrigerios salen de tu casa, van a ser 100 veces mejores que lo que vas a comprar."
+            },
+            {
+              "q": "¿En cuánto tiempo se ven los cambios?",
+              "a": "Cada cuerpo es distinto y no te voy a prometer fechas, pero al comer 100% real la inflamación, la ansiedad y los antojos van bajando progresivamente. Eso sí lo veo todos los días en consulta."
+            },
+            {
+              "q": "¿Me garantizas que mis hijos van a comer mejor?",
+              "a": "Con niños ninguna garantía es absoluta, pero estas recetas están diseñadas para gustarles: nuggets, mini albóndigas, arepas con queso. Y si no te funciona, tienes los 7 días de garantía de Hotmart."
+            },
+            {
+              "q": "¿Voy a bajar de peso con esto?",
+              "a": "Este no es un plan para adelgazar y no te prometo cifras: es aprender a comer 100% comida real. Lo que sí te enseño es que con la insulina alta no se puede oxidar grasa, y aquí aprendes a no dispararla."
+            },
+            {
+              "q": "¿De verdad se ahorra plata?",
+              "a": "Sí: los refrigerios planeados desde casa salen más baratos que el palito de queso o el sánduche de la cafetería. Comer real no es lo caro; lo caro es improvisar todos los días."
+            },
+            {
+              "q": "¿No me va a quitar mucho tiempo en las mañanas?",
+              "a": "No: preparas por lotes, congelas hasta 3 meses y en la mañana solo cocinas en air fryer 10 a 20 minutos sin descongelar. La batalla contra el reloj se acaba con planeación, no con madrugadas."
+            },
+            {
+              "q": "¿Ayuda con la concentración de mis hijos?",
+              "a": "El cerebro solo trabaja con glucosa: un snack ultraprocesado provoca hipoglicemia reactiva y el cuerpo lo interpreta como estrés. Por eso hay un módulo completo de loncheras para concentración, para rendir en clase o en la oficina."
+            },
+            {
+              "q": "¿Y si a mí no me funciona?",
+              "a": "Pruébalo por dentro: si en los primeros 7 días ves que no es para ti, Hotmart te devuelve el 100% sin preguntas. Así de simple."
+            },
+            {
+              "q": "¿Esto es solo para la lonchera del colegio?",
+              "a": "No: la misma regla 3+1 sirve para tu snack de media mañana y media tarde en el trabajo. La fatiga del final de la tarde es, en gran parte, respuesta a lo que comiste."
+            }
+          ]
+        },
+        {
+          "label": "El Dr. Rosero",
+          "items": [
+            {
+              "q": "¿Quién me va a enseñar?",
+              "a": "Mi nombre es Óscar Rosero, médico endocrinólogo experto en estilos de vida y un convencido de que la comida real nos va a sanar. Yo mismo grabé cada clase y cada receta."
+            },
+            {
+              "q": "¿Qué es un endocrinólogo?",
+              "a": "El médico especialista en hormonas y metabolismo: insulina, tiroides, cortisol. Por eso en el taller entiendes no solo el qué preparar, sino el porqué detrás de cada elección."
+            },
+            {
+              "q": "¿De verdad es médico?",
+              "a": "Sí: soy médico endocrinólogo, especialista en nutrición metabólica y hormonas, con más de 10 años de experiencia. En mi consulta atiendo familias con hijos en el colegio y pacientes con resistencia a la insulina, hipotiroidismo y sobrepeso."
+            },
+            {
+              "q": "¿Él mismo cocina las recetas?",
+              "a": "Sí, las grabé en mi cocina, paso a paso y con la mano en la masa —recuerden que en la cocina todo se hace con la mano—. Lo que ves es exactamente lo que preparo para las loncheras reales."
+            },
+            {
+              "q": "¿Por qué un endocrinólogo enseña loncheras?",
+              "a": "Porque lo veo cada día en mi consulta: la salud metabólica de la familia se resiente en silencio con lo que empacamos de lonchera. Cambiar ese snack cambia insulina, cortisol y concentración."
+            },
+            {
+              "q": "¿Puedo hacerle preguntas médicas por este chat?",
+              "a": "Este chat resuelve dudas del taller, no es una consulta médica. Para tu caso personal, lo responsable es que lo veas con tu médico tratante."
+            },
+            {
+              "q": "¿Dónde puedo ver más de su contenido?",
+              "a": "En mi Instagram como Dr. Óscar Rosero, donde comparto este mensaje con una comunidad real de familias. Los comentarios que ves en la página son de personas reales, sin filtros ni actores."
+            },
+            {
+              "q": "¿Cuál es su filosofía?",
+              "a": "Estrategias prácticas, sin juicios ni obsesiones, aplicables a la vida real: 100% comida real, siempre. Y algo que repito en el taller: tu cuerpo es lo más sagrado."
+            },
+            {
+              "q": "¿Por dónde empiezo?",
+              "a": "Toca el botón 'Quiero mi lonchera real', completa el pago seguro en Hotmart y en minutos estás viendo la primera clase. Y recuerda: tienes 7 días de garantía para probarlo tranquilo."
+            }
+          ]
+        }
+      ],
+      theme: {
+        title: 'Loncheras Inteligentes',
+        avatar: 'assets/avatar-rosero.png?v=3',
+        ink: '#f76e28',        /* --brand-ink: naranja de marca (chip activo + botón) */
+        inkText: '#ffffff',
+        accentSoft: '#fdeadf', /* --brand-soft: naranja muy pálido (chips inactivos) */
+        accentText: '#c9530f'  /* --brand-dark: naranja oscuro con contraste */
+      }
+    };
+  </script>
+  <script defer src="scripts/faqchat.js?v=20260704"></script>
+
+<script>setTimeout(function(){document.documentElement.classList.add("reveal-rescue")},2500);</script>
 </body>
 </html>

@@ -234,7 +234,24 @@
       const usd = parseFloat(el.getAttribute("data-price-usd"));
       if (!usd || isNaN(usd)) return;
       const target = el.querySelector(".price-amount") || el;
-      target.textContent = formatAmount(usd, currency, rate);
+      // Formato unificado del sitio: "$ 107.000 COP (USD $30)".
+      // El símbolo "$" es ambiguo en COP/CLP/ARS/MXN → se muestra el código ISO.
+      const AMBIGUOUS = { COP: 1, CLP: 1, ARS: 1, MXN: 1, UYU: 1, CAD: 1 };
+      let text = formatAmount(usd, currency, rate);
+      if (currency !== "USD" && AMBIGUOUS[currency]) text += " " + currency;
+      target.textContent = text;
+      let ref = el.querySelector(".li-usd-ref");
+      if (currency === "USD") {
+        if (ref) ref.remove();
+      } else {
+        if (!ref) {
+          ref = document.createElement("span");
+          ref.className = "li-usd-ref";
+          // junto al número, no al final del bloque
+          target.insertAdjacentElement("afterend", ref);
+        }
+        ref.textContent = " (USD $" + (usd % 1 ? usd.toFixed(2) : usd) + ")";
+      }
     });
     // Mostrar disclaimer "precio aproximado" solo si NO es USD
     document.querySelectorAll("[data-currency-disclaimer]").forEach((el) => {

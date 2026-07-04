@@ -19,7 +19,7 @@
 (() => {
   "use strict";
 
-  const ENDPOINT = "/api/hotmart-stats";
+  const ENDPOINT = "https://academiacomidareal.com/api/hotmart-stats";
   const TIMEOUT_MS = 1200;
   const CACHE_KEY = "li.price.v1";
   const CACHE_TTL = 10 * 60 * 1000; // 10 min en cliente
