@@ -13,11 +13,9 @@ declare(strict_types=1);
  *   a. Cache de archivo (TTL 10 min) → respuesta directa.
  *   b. Credenciales Hotmart vía li_cfg → OAuth client_credentials +
  *      producto + historial de ventas (misma lógica del JS original).
- *   c. Proxy GET a https://loncheras-inteligentes.pages.dev/api/hotmart-stats
- *      (timeout 5s), JSON tal cual con source reetiquetado a "proxy-pages".
- *   d. Fallback estático (no se cachea).
+ *   c. Fallback estático (no se cachea).
  *
- * Se cachea el resultado de (b) o (c); nunca el de (d).
+ * Se cachea el resultado de (b); nunca el de (c).
  * Credenciales: SIEMPRE vía li_cfg (archivo fuera del webroot o env). Nada
  * hardcodeado en este archivo.
  */
@@ -86,16 +84,7 @@ if ($clientId !== null && $clientSecret !== null) {
 }
 
 // ---------------------------------------------------------------------------
-// c) Proxy al endpoint original en Cloudflare Pages (timeout 5s).
-// ---------------------------------------------------------------------------
-$proxied = ($productId === 'K100999555X') ? li_stats_fetch_from_pages_proxy() : null;
-if ($proxied !== null) {
-    li_stats_cache_write($cacheFile, $proxied);
-    li_json_response($proxied, LI_STATS_CACHE_TTL);
-}
-
-// ---------------------------------------------------------------------------
-// d) Fallback estático — misma forma que el original. NO se cachea.
+// c) Fallback estático — misma forma que el original. NO se cachea.
 // ---------------------------------------------------------------------------
 li_json_response([
     'source'       => 'fallback',
@@ -271,39 +260,6 @@ function li_stats_fetch_from_hotmart(string $clientId, string $clientSecret, arr
         'fetched_at'   => (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('Y-m-d\TH:i:s.v\Z'),
     ];
 }
-
-/**
- * Proxy al endpoint original en Cloudflare Pages. Devuelve su JSON tal cual;
- * si trae campo "source" se reetiqueta a "proxy-pages" (misma forma).
- *
- * @return array<string, mixed>|null
- */
-function li_stats_fetch_from_pages_proxy(): ?array
-{
-    $res = li_http_request(
-        'GET',
-        'https://loncheras-inteligentes.pages.dev/api/hotmart-stats',
-        ['Accept: application/json'],
-        null,
-        5
-    );
-
-    if ($res === null || $res['status'] < 200 || $res['status'] >= 300) {
-        return null;
-    }
-
-    $decoded = json_decode($res['body'], true, 16);
-    if (!is_array($decoded)) {
-        return null;
-    }
-
-    if (array_key_exists('source', $decoded)) {
-        $decoded['source'] = 'proxy-pages';
-    }
-
-    return $decoded;
-}
-
 
 /**
  * Lee el precio USD del payload embebido en la página pública del checkout.
